@@ -1,0 +1,19 @@
+@function rem($pixels) {
+  @return #{$pixels / 16px}rem;
+}
+
+@mixin breakpoint($point) {
+  @if $point==large {
+    @media (max-width: rem(1000px)) {
+      @content;
+    }
+  } @else if $point==phablet {
+    @media (max-width: rem(700px)) {
+      @content;
+    }
+  } @else if $point==mobile {
+    @media (max-width: rem(438px)) {
+      @content;
+    }
+  }
+}
