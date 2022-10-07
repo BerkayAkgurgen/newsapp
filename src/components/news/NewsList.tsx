@@ -1,13 +1,16 @@
 import { Box, Grid, LinearProgress, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../../store/store";
 import NewsListItems from "./NewsListItems";
+import * as ROUTES from "../../configs/RouterConfig";
 
 function NewsList() {
   const auth = useSelector((state: RootState) => state.loginReducer.login);
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(
@@ -15,7 +18,14 @@ function NewsList() {
     )
       .then((response) => response.json())
       .then((result) => {
-        setNewsList(result.articles);
+        if (result.status !== "error") {
+          setNewsList(result.articles);
+          console.log(22);
+        } else {
+          setNewsList([]);
+          navigate(ROUTES.LOGIN);
+          alert("Wrong access token.")
+        }
         setLoading(false);
       });
   }, []);
@@ -47,7 +57,7 @@ function NewsList() {
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 4, sm: 8, md: 12, lg: 14 }}
         >
-          {newsList.map((item, index) => (
+          {newsList?.map((item, index) => (
             <NewsListItems item={item} key={index} />
           ))}
         </Grid>
